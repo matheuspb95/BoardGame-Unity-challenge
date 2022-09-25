@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public TMP_Text resultTXT;
     public TMP_Text GameOverTXT;
     public Transform cameraPivot;
+    public SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +37,7 @@ public class GameManager : MonoBehaviour
     public void RollDices() 
     {
         attackPanel.SetActive(true);
+        soundManager.PlayDices();
         
         int[] Player1Results = Player1.RollDices();
         int[] Player2Results = Player2.RollDices();
@@ -75,21 +77,28 @@ public class GameManager : MonoBehaviour
     }
 
     void SetCameraPos(){
-        Vector3 playersDir = turn == 2 ?  Player2.transform.position - Player1.transform.position 
-                                  :  Player1.transform.position - Player2.transform.position;
-        float cameraAngle = Vector3.Angle(new Vector3(1,0,1), playersDir);
-        cameraPivot.position = 0.5f * (Player2.transform.position + Player1.transform.position);
-        StartCoroutine(MoveCamera(new Vector3(0, cameraAngle, 0)));
-        cameraPivot.localScale = Vector3.one * (5 + playersDir.magnitude) * 0.035f;
+        StartCoroutine(MoveCamera());
     }
 
-    IEnumerator MoveCamera(Vector3 Dest){
-        Vector3 Start = cameraPivot.eulerAngles;
+    IEnumerator MoveCamera(){
+        Vector3 playersDir = turn == 2 ?  Player2.transform.position - Player1.transform.position 
+                                  :  Player1.transform.position - Player2.transform.position;
+        Vector3 StartAngle = cameraPivot.forward;
+        Vector3 StartPos = cameraPivot.position;
+        Vector3 EndPos = 0.5f * (Player2.transform.position + Player1.transform.position);
+        Vector3 EndScale = Vector3.one * (5 + playersDir.magnitude) * 0.035f;
+        Vector3 StartScale = cameraPivot.localScale;
         float t = 0;
+        soundManager.PlayCamera();
         while(t < 1){
             yield return new WaitForFixedUpdate();
             t += Time.fixedDeltaTime;
-            cameraPivot.eulerAngles = Vector3.Lerp(Start, Dest, t);
+            cameraPivot.forward = Vector3.Lerp(StartAngle, playersDir, t);
+            cameraPivot.position = Vector3.Lerp(StartPos, EndPos, t);
+            cameraPivot.localScale = Vector3.Lerp(StartScale, EndScale, t);
         }
+        cameraPivot.forward = playersDir;
+        cameraPivot.position = EndPos;
+        cameraPivot.localScale = EndScale;
     }
 }

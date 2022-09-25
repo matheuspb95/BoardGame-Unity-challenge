@@ -17,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject DiceTXT;
     public TMP_Text lifeTXT;
     public TMP_Text attackTXT;
+    public SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +25,21 @@ public class PlayerManager : MonoBehaviour
     }
 
     public void MoveChar(Vector3 targetPosition){
-        transform.position = targetPosition;
+        StartCoroutine(Move(targetPosition));
+    }
+
+    public IEnumerator Move(Vector3 targetPosition){
+        Vector3 Start = transform.position;
+        float t = 0;
+        MoveControl.SetActive(false);
         moves -= 1;
+        while(t <= 1){
+            yield return new WaitForFixedUpdate();
+            t += Time.fixedDeltaTime * 3;
+            transform.position = Vector3.Lerp(Start, targetPosition, t);
+        }
         EnableMove();
+        soundManager.PlayMove();
         if(moves <= 0){
             MoveControl.SetActive(false);
             moves = 3;
@@ -51,6 +64,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     public int ReceiveDamage(PlayerManager Enemy){
+        soundManager.PlayDamage();
         life -= Enemy.attack;
         lifeTXT.text = "Life: " + life;
         return life;
@@ -84,6 +98,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     public void Collect(){
+        soundManager.PlayUpgrade();
         switch (UnityEngine.Random.Range(0, 3)){
             case 1:
                 Debug.Log("Recover Health");
