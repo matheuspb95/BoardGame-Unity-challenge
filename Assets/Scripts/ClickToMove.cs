@@ -5,10 +5,11 @@ using UnityEngine;
 public class ClickToMove : MonoBehaviour
 {
     public PlayerManager Player;
+    public GameManager manager;
     // Start is called before the first frame update
     void Start()
     {
-        
+        manager = Camera.main.GetComponent<GameManager>();        
     }
 
     void OnEnable(){
@@ -29,6 +30,7 @@ public class ClickToMove : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if(other.tag == "Player"){
             gameObject.SetActive(false);
+            manager.RollDices();
         }
     }
 
