@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public GameObject attackPanel;
     public TMP_Text resultTXT;
     public TMP_Text GameOverTXT;
+    public Transform cameraPivot;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     public void ChangeTurn() 
     {
+        SetCameraPos();
         if(turn == 1){
             turn = 2;
             Player2.EnableMove();
@@ -70,5 +72,24 @@ public class GameManager : MonoBehaviour
 
     public void GoMenu(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    void SetCameraPos(){
+        Vector3 playersDir = turn == 2 ?  Player2.transform.position - Player1.transform.position 
+                                  :  Player1.transform.position - Player2.transform.position;
+        float cameraAngle = Vector3.Angle(new Vector3(1,0,1), playersDir);
+        cameraPivot.position = 0.5f * (Player2.transform.position + Player1.transform.position);
+        StartCoroutine(MoveCamera(new Vector3(0, cameraAngle, 0)));
+        cameraPivot.localScale = Vector3.one * (5 + playersDir.magnitude) * 0.035f;
+    }
+
+    IEnumerator MoveCamera(Vector3 Dest){
+        Vector3 Start = cameraPivot.eulerAngles;
+        float t = 0;
+        while(t < 1){
+            yield return new WaitForFixedUpdate();
+            t += Time.fixedDeltaTime;
+            cameraPivot.eulerAngles = Vector3.Lerp(Start, Dest, t);
+        }
     }
 }

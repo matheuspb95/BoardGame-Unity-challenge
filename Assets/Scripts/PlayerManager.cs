@@ -82,4 +82,28 @@ public class PlayerManager : MonoBehaviour
         }
         return DicesResults;
     }
+
+    public void Collect(){
+        switch (UnityEngine.Random.Range(0, 3)){
+            case 1:
+                Debug.Log("Recover Health");
+                life += 1;
+            break;
+            case 2:
+                Debug.Log("Increase Next Attack");
+                attack += 1;
+            break;
+            case 3:
+                Debug.Log("Add a dice");
+                dicesCount += 1;
+            break;
+            case 4:
+                Debug.Log("Extra Move");
+                moves += 1;
+            break;
+            default:
+                Debug.Log("No collectible");
+            break;
+        }
+    }
 }
