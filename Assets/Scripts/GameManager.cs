@@ -45,10 +45,16 @@ public class GameManager : MonoBehaviour
         int compareResult = 0;
 
         for(int i = 0; i < 3; i++){
-            if(Player1Results[i] >= Player2Results[i]){
+            if(Player1Results[i] > Player2Results[i]){
                 compareResult += 1;
             } else if(Player1Results[i] < Player2Results[i]){
                 compareResult -= 1;
+            } else {
+                if(turn == 1){
+                    compareResult += 1;                    
+                } else {
+                    compareResult -= 1;
+                }
             }
         }
         

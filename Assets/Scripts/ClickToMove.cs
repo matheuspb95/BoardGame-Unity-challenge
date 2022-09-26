@@ -35,6 +35,8 @@ public class ClickToMove : MonoBehaviour
     }
 
     void OnMouseDown(){
-        Player.MoveChar(transform.position);
+        if(!manager.attackPanel.activeInHierarchy){
+            Player.MoveChar(transform.position);
+        }
     }
 }

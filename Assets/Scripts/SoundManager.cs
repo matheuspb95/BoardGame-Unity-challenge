@@ -6,9 +6,12 @@ public class SoundManager : MonoBehaviour
 {
     public AudioClip confirm, moveCamera, moveChar, dices, damage, upgrade;
     AudioSource source;
+    public static float volume;
 
     public void Start(){
         source = GetComponent<AudioSource>();
+        Debug.Log(volume);
+        source.volume = volume;
     }
 
     public void PlayConfirm(){

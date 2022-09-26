@@ -18,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     public TMP_Text lifeTXT;
     public TMP_Text attackTXT;
     public SoundManager soundManager;
+    public Announce AnnounceTXT;
     // Start is called before the first frame update
     void Start()
     {
@@ -94,30 +95,34 @@ public class PlayerManager : MonoBehaviour
             diceRes.transform.localPosition -= Vector3.up * 50 * i;
             diceRes.SetActive(true);
         }
+
+        attack = 1;
+        dicesCount = 3;
+
         return DicesResults;
     }
 
     public void Collect(){
         soundManager.PlayUpgrade();
-        switch (UnityEngine.Random.Range(0, 3)){
+        switch (UnityEngine.Random.Range(1, 5)){
             case 1:
-                Debug.Log("Recover Health");
+                AnnounceTXT.AddAnnounce("Recover Health");
                 life += 1;
             break;
             case 2:
-                Debug.Log("Increase Next Attack");
+                AnnounceTXT.AddAnnounce("Increase Next Attack");
                 attack += 1;
             break;
             case 3:
-                Debug.Log("Add a dice");
+                AnnounceTXT.AddAnnounce("Add a dice");
                 dicesCount += 1;
             break;
             case 4:
-                Debug.Log("Extra Move");
+                AnnounceTXT.AddAnnounce("Extra Move");
                 moves += 1;
             break;
             default:
-                Debug.Log("No collectible");
+                AnnounceTXT.AddAnnounce("No collectible");
             break;
         }
     }
